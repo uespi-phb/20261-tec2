@@ -35,7 +35,10 @@ class SignInUseCase {
     if (userAuth === null) {
       throw new InvalidCredentialsError()
     }
-    await this.passwordComparer.compare(input.password, userAuth.passwordHash)
+    const isCredentialsValid = await this.passwordComparer.compare(input.password, userAuth.passwordHash)
+    if (!isCredentialsValid) {
+      throw new InvalidCredentialsError()
+    }
   }
 }
 
@@ -94,10 +97,17 @@ describe('SignInUseCase', () => {
     expect(passwordComparer.compare).not.toHaveBeenCalled()
   })
 
-  test('Should  call PasswordComparer if loaded user hashed password', async () => {
+  test('Should call PasswordComparer if loaded user hashed password', async () => {
     // Act
     await signInUseCase.execute(input)
     // Assert
     expect(passwordComparer.compare).toHaveBeenCalledWith(input.password, userAuth.passwordHash)
+  })
+
+  test('Should throw InvalidCredentialsError if user password is invalid', async () => {
+    // Arrange
+    passwordComparer.compare.mockResolvedValueOnce(false)
+    // Act / Assert
+    await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
   })
 })

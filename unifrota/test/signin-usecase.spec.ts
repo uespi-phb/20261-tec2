@@ -9,6 +9,15 @@ type UserAuthData = {
   passwordHash: string
 }
 
+type AccessToken = {
+  accessToken: string
+}
+
+type AccessTokenPayload = {
+  userId: string
+  userEmail: string
+}
+
 interface LoadUserByEmail {
   load: (email: string) => Promise<UserAuthData | null>
 }
@@ -17,8 +26,8 @@ interface PasswordComparer {
   compare: (plainPassword: string, hashedPassword: string) => Promise<boolean>
 }
 
-interface GenerateAccessToken<T> {
-  generate: (payload: T) => Promise<T>
+interface GenerateAccessToken<P> {
+  generate: (payload: P) => Promise<string>
 }
 
 type SignInInput = {
@@ -27,14 +36,10 @@ type SignInInput = {
 }
 
 class SignInUseCase {
-  private loadUserByEmail: LoadUserByEmail
-  private passwordComparer: PasswordComparer
-  private generateAccessToken: GenerateAccessToken<string>
-
   constructor(
-    loadUserByEmail: LoadUserByEmail,
-    passwordComparer: PasswordComparer,
-    generateAccessToken: GenerateAccessToken<string>,
+    private readonly loadUserByEmail: LoadUserByEmail,
+    private readonly passwordComparer: PasswordComparer,
+    private readonly generateAccessToken: GenerateAccessToken<AccessTokenPayload>,
   ) {
     this.loadUserByEmail = loadUserByEmail
     this.passwordComparer = passwordComparer
@@ -66,7 +71,7 @@ describe('SignInUseCase', () => {
   let accessToken: string
   let loadUserByEmail: MockProxy<LoadUserByEmail>
   let passwordComparer: MockProxy<PasswordComparer>
-  let generateAccessToken: MockProxy<GenerateAccessToken<string>>
+  let generateAccessToken: MockProxy<GenerateAccessToken<AccessTokenPayload>>
   let signInUseCase: SignInUseCase
 
   beforeAll(() => {
@@ -84,7 +89,7 @@ describe('SignInUseCase', () => {
     loadUserByEmail.load.mockResolvedValue(userAuth)
     passwordComparer = mock<PasswordComparer>()
     passwordComparer.compare.mockResolvedValue(true)
-    generateAccessToken = mock<GenerateAccessToken<string>>()
+    generateAccessToken = mock<GenerateAccessToken<AccessTokenPayload>>()
     generateAccessToken.generate.mockResolvedValue(accessToken)
     signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer, generateAccessToken)
   })

@@ -18,6 +18,10 @@ type AccessTokenPayload = {
   userEmail: string
 }
 
+interface UseCase<Input, Output> {
+  execute: (input: Input) => Promise<Output>
+}
+
 interface LoadUserByEmail {
   load: (email: string) => Promise<UserAuthData | null>
 }
@@ -35,7 +39,9 @@ type SignInInput = {
   password: string
 }
 
-class SignInUseCase {
+type SignInOutput = AccessToken
+
+class SignInUseCase implements UseCase<SignInInput, SignInOutput> {
   constructor(
     private readonly loadUserByEmail: LoadUserByEmail,
     private readonly passwordComparer: PasswordComparer,
@@ -45,7 +51,7 @@ class SignInUseCase {
     this.passwordComparer = passwordComparer
     this.generateAccessToken = generateAccessToken
   }
-  async execute(input: SignInInput): Promise<AccessToken> {
+  async execute(input: SignInInput): Promise<SignInOutput> {
     const userData = await this.loadUserByEmail.load(input.email)
     if (userData === null) {
       throw new InvalidCredentialsError()

@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest'
-import { mock } from 'vitest-mock-extended'
+import { describe, test, expect, beforeAll } from 'vitest'
+import { mock, type MockProxy } from 'vitest-mock-extended'
 //
 // PRODUCTION CODE
 //
@@ -47,21 +47,30 @@ class InvalidCredentialsError extends Error {
 //
 
 describe('SignInUseCase', () => {
-  test('Should call LoadUserByEmail with provided email', async () => {
-    // Arrange
-    const input = {
+  let input: SignInInput
+  let userAuth: UserAuthData
+  let loadUserByEmail: MockProxy<LoadUserByEmail>
+  let passwordComparer: MockProxy<PasswordComparer>
+  let signInUseCase: SignInUseCase
+
+  beforeAll(() => {
+    input = {
       email: 'john.doe@email.com',
       password: 'any_plain_password',
     }
-    const userAuth = {
+    userAuth = {
       userId: 'any_user_id',
       userName: 'John Doe',
       passwordHash: 'any_hashed_password',
     }
-    const loadUserByEmail = mock<LoadUserByEmail>()
+    loadUserByEmail = mock<LoadUserByEmail>()
     loadUserByEmail.load.mockResolvedValue(userAuth)
-    const passwordComparer = mock<PasswordComparer>()
-    const signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer)
+    passwordComparer = mock<PasswordComparer>()
+    passwordComparer.compare.mockResolvedValue(true)
+    signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer)
+  })
+
+  test('Should call LoadUserByEmail with provided email', async () => {
     // Act
     await signInUseCase.execute(input)
     // Assert
@@ -70,35 +79,12 @@ describe('SignInUseCase', () => {
 
   test('Should throw InvalidCredentialsError if user is not found by email', async () => {
     // Arrange
-    const input = {
-      email: 'john.doe@email.com',
-      password: 'any_plain_password',
-    }
-    const loadUserByEmail = mock<LoadUserByEmail>()
-    loadUserByEmail.load.mockResolvedValue(null)
-    const passwordComparer = mock<PasswordComparer>()
-
-    const signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer)
-
+    loadUserByEmail.load.mockResolvedValueOnce(null)
     // Act / Assert
     await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
   })
 
   test('Should not call PasswordComparer if user is not found by email', async () => {
-    // Arrange
-    const input = {
-      email: 'john.doe@email.com',
-      password: 'any_plain_password',
-    }
-    const userAuth = {
-      userId: 'any_user_id',
-      userName: 'John Doe',
-      passwordHash: 'any_hashed_password',
-    }
-    const loadUserByEmail = mock<LoadUserByEmail>()
-    loadUserByEmail.load.mockResolvedValue(userAuth)
-    const passwordComparer = mock<PasswordComparer>()
-    const signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer)
     // Act
     await signInUseCase.execute(input)
     // Assert

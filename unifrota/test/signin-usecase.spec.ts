@@ -17,6 +17,10 @@ interface PasswordComparer {
   compare: (plainPassword: string, hashedPassword: string) => Promise<boolean>
 }
 
+interface GenerateAccessToken<T> {
+  generate: (payload: T) => Promise<T>
+}
+
 type SignInInput = {
   email: string
   password: string
@@ -25,10 +29,16 @@ type SignInInput = {
 class SignInUseCase {
   private loadUserByEmail: LoadUserByEmail
   private passwordComparer: PasswordComparer
+  private generateAccessToken: GenerateAccessToken<string>
 
-  constructor(loadUserByEmail: LoadUserByEmail, passwordComparer: PasswordComparer) {
+  constructor(
+    loadUserByEmail: LoadUserByEmail,
+    passwordComparer: PasswordComparer,
+    generateAccessToken: GenerateAccessToken<string>,
+  ) {
     this.loadUserByEmail = loadUserByEmail
     this.passwordComparer = passwordComparer
+    this.generateAccessToken = generateAccessToken
   }
   async execute(input: SignInInput): Promise<void> {
     const userAuth = await this.loadUserByEmail.load(input.email)
@@ -53,8 +63,10 @@ class InvalidCredentialsError extends Error {
 describe('SignInUseCase', () => {
   let input: SignInInput
   let userAuth: UserAuthData
+  let accessToken: string
   let loadUserByEmail: MockProxy<LoadUserByEmail>
   let passwordComparer: MockProxy<PasswordComparer>
+  let generateAccessToken: MockProxy<GenerateAccessToken<string>>
   let signInUseCase: SignInUseCase
 
   beforeAll(() => {
@@ -67,11 +79,14 @@ describe('SignInUseCase', () => {
       userName: 'John Doe',
       passwordHash: 'any_hashed_password',
     }
+    accessToken = 'any_access_token'
     loadUserByEmail = mock<LoadUserByEmail>()
     loadUserByEmail.load.mockResolvedValue(userAuth)
     passwordComparer = mock<PasswordComparer>()
     passwordComparer.compare.mockResolvedValue(true)
-    signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer)
+    generateAccessToken = mock<GenerateAccessToken<string>>()
+    generateAccessToken.generate.mockResolvedValue(accessToken)
+    signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer, generateAccessToken)
   })
 
   test('Should call LoadUserByEmail with provided email', async () => {
@@ -109,5 +124,13 @@ describe('SignInUseCase', () => {
     passwordComparer.compare.mockResolvedValueOnce(false)
     // Act / Assert
     await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
+  })
+
+  test('Should not call GenerateAccessToken if user credentials are invalid', async () => {
+    // Arrange
+    passwordComparer.compare.mockResolvedValueOnce(false)
+    // Act / Assert
+    await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    expect(generateAccessToken.generate).not.toHaveBeenCalled()
   })
 })

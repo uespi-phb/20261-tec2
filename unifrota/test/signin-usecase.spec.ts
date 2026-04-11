@@ -45,14 +45,22 @@ class SignInUseCase {
     this.passwordComparer = passwordComparer
     this.generateAccessToken = generateAccessToken
   }
-  async execute(input: SignInInput): Promise<void> {
-    const userAuth = await this.loadUserByEmail.load(input.email)
-    if (userAuth === null) {
+  async execute(input: SignInInput): Promise<AccessToken> {
+    const userData = await this.loadUserByEmail.load(input.email)
+    if (userData === null) {
       throw new InvalidCredentialsError()
     }
-    const isCredentialsValid = await this.passwordComparer.compare(input.password, userAuth.passwordHash)
+    const isCredentialsValid = await this.passwordComparer.compare(input.password, userData.passwordHash)
     if (!isCredentialsValid) {
       throw new InvalidCredentialsError()
+    }
+    const payload: AccessTokenPayload = {
+      userId: userData.userId,
+      userEmail: input.email,
+    }
+    const accessToken = await this.generateAccessToken.generate(payload)
+    return {
+      accessToken,
     }
   }
 }
@@ -68,7 +76,7 @@ class InvalidCredentialsError extends Error {
 describe('SignInUseCase', () => {
   let input: SignInInput
   let userAuth: UserAuthData
-  let accessToken: string
+  let accessToken: AccessToken
   let loadUserByEmail: MockProxy<LoadUserByEmail>
   let passwordComparer: MockProxy<PasswordComparer>
   let generateAccessToken: MockProxy<GenerateAccessToken<AccessTokenPayload>>
@@ -84,13 +92,15 @@ describe('SignInUseCase', () => {
       userName: 'John Doe',
       passwordHash: 'any_hashed_password',
     }
-    accessToken = 'any_access_token'
+    accessToken = {
+      accessToken: 'any_access_token',
+    }
     loadUserByEmail = mock<LoadUserByEmail>()
     loadUserByEmail.load.mockResolvedValue(userAuth)
     passwordComparer = mock<PasswordComparer>()
     passwordComparer.compare.mockResolvedValue(true)
     generateAccessToken = mock<GenerateAccessToken<AccessTokenPayload>>()
-    generateAccessToken.generate.mockResolvedValue(accessToken)
+    generateAccessToken.generate.mockResolvedValue(accessToken.accessToken)
     signInUseCase = new SignInUseCase(loadUserByEmail, passwordComparer, generateAccessToken)
   })
 
@@ -137,5 +147,12 @@ describe('SignInUseCase', () => {
     // Act / Assert
     await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
     expect(generateAccessToken.generate).not.toHaveBeenCalled()
+  })
+
+  test('Should return AccessToken if user credentials are valid', async () => {
+    // Act
+    const token = await signInUseCase.execute(input)
+    // Assert
+    expect(token).toStrictEqual(accessToken)
   })
 })

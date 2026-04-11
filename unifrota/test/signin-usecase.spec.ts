@@ -35,6 +35,7 @@ class SignInUseCase {
     if (userAuth === null) {
       throw new InvalidCredentialsError()
     }
+    await this.passwordComparer.compare(input.password, userAuth.passwordHash)
   }
 }
 
@@ -85,9 +86,18 @@ describe('SignInUseCase', () => {
   })
 
   test('Should not call PasswordComparer if user is not found by email', async () => {
+    // Arrange
+    loadUserByEmail.load.mockResolvedValueOnce(null)
+
+    // Act / Assert
+    await expect(signInUseCase.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    expect(passwordComparer.compare).not.toHaveBeenCalled()
+  })
+
+  test('Should  call PasswordComparer if loaded user hashed password', async () => {
     // Act
     await signInUseCase.execute(input)
     // Assert
-    expect(passwordComparer.compare).not.toHaveBeenCalled()
+    expect(passwordComparer.compare).toHaveBeenCalledWith(input.password, userAuth.passwordHash)
   })
 })

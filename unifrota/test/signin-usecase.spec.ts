@@ -1,83 +1,13 @@
 import { describe, test, expect, beforeAll } from 'vitest'
 import { mock, type MockProxy } from 'vitest-mock-extended'
-//
-// PRODUCTION CODE
-//
-type UserAuthData = {
-  userId: string
-  userName: string
-  passwordHash: string
-}
 
-type AccessToken = {
-  accessToken: string
-}
-
-type AccessTokenPayload = {
-  userId: string
-  userEmail: string
-}
-
-interface UseCase<Input, Output> {
-  execute: (input: Input) => Promise<Output>
-}
-
-interface LoadUserByEmail {
-  load: (email: string) => Promise<UserAuthData | null>
-}
-
-interface PasswordComparer {
-  compare: (plainPassword: string, hashedPassword: string) => Promise<boolean>
-}
-
-interface GenerateAccessToken<P> {
-  generate: (payload: P) => Promise<string>
-}
-
-type SignInInput = {
-  email: string
-  password: string
-}
-
-type SignInOutput = AccessToken
-
-class SignInUseCase implements UseCase<SignInInput, SignInOutput> {
-  constructor(
-    private readonly loadUserByEmail: LoadUserByEmail,
-    private readonly passwordComparer: PasswordComparer,
-    private readonly generateAccessToken: GenerateAccessToken<AccessTokenPayload>,
-  ) {
-    this.loadUserByEmail = loadUserByEmail
-    this.passwordComparer = passwordComparer
-    this.generateAccessToken = generateAccessToken
-  }
-  async execute(input: SignInInput): Promise<SignInOutput> {
-    const userData = await this.loadUserByEmail.load(input.email)
-    if (userData === null) {
-      throw new InvalidCredentialsError()
-    }
-    const isCredentialsValid = await this.passwordComparer.compare(input.password, userData.passwordHash)
-    if (!isCredentialsValid) {
-      throw new InvalidCredentialsError()
-    }
-    const payload: AccessTokenPayload = {
-      userId: userData.userId,
-      userEmail: input.email,
-    }
-    const accessToken = await this.generateAccessToken.generate(payload)
-    return {
-      accessToken,
-    }
-  }
-}
-
-class InvalidCredentialsError extends Error {
-  constructor(message: string = 'Invalid user credentials') {
-    super(message)
-  }
-}
-//
-//
+import type { AccessToken } from '../src/access-token.js'
+import type { GenerateAccessToken } from '../src/generate-access-token.js'
+import { InvalidCredentialsError } from '../src/invalid-credentials-error.js'
+import type { LoadUserByEmail, UserAuthData } from '../src/load-user-by-email.js'
+import type { PasswordComparer } from '../src/password-comparer.js'
+import { SignInUseCase } from '../src/signin-usecase.js'
+import type { SignInInput, AccessTokenPayload } from '../src/signin-usecase.js'
 
 describe('SignInUseCase', () => {
   let input: SignInInput

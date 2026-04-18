@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
-import { Email } from '../src/email.js'
-import { InvalidEmailError } from '../src/invalid-email-error.js'
+import { Email } from '#src/email'
+import { InvalidEmailError } from '#src/invalid-email-error'
 
 describe('Email', () => {
   test('Should create an Email when e-mail is valid', () => {

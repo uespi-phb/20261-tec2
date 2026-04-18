@@ -37,7 +37,7 @@ const sharedTypeScriptRules = {
       groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index']],
       pathGroups: [
         {
-          pattern: '@src/**',
+          pattern: '#src/**',
           group: 'internal',
           position: 'after',
         },

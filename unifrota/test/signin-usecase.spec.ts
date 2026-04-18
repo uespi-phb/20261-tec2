@@ -1,13 +1,13 @@
 import { describe, test, expect, beforeAll } from 'vitest'
 import { mock, type MockProxy } from 'vitest-mock-extended'
 
-import type { AccessToken } from '../src/access-token.js'
-import type { GenerateAccessToken } from '../src/generate-access-token.js'
-import { InvalidCredentialsError } from '../src/invalid-credentials-error.js'
-import type { LoadUserByEmail, UserAuthData } from '../src/load-user-by-email.js'
-import type { PasswordComparer } from '../src/password-comparer.js'
-import { SignInUseCase } from '../src/signin-usecase.js'
-import type { SignInInput, AccessTokenPayload } from '../src/signin-usecase.js'
+import type { AccessToken } from '../src/access-token'
+import type { GenerateAccessToken } from '../src/generate-access-token'
+import { InvalidCredentialsError } from '../src/invalid-credentials-error'
+import type { LoadUserByEmail, UserAuthData } from '../src/load-user-by-email'
+import type { PasswordComparer } from '../src/password-comparer'
+import { SignInUseCase } from '../src/signin-usecase'
+import type { SignInInput, AccessTokenPayload } from '../src/signin-usecase'
 
 describe('SignInUseCase', () => {
   let input: SignInInput

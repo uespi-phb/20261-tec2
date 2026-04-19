@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2024",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "target": "ES2024",
+    "lib": ["ES2024"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "moduleDetection": "force",
+    "customConditions": ["development"],
     "sourceMap": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
-
+    "erasableSyntaxOnly": false,
     "strict": true,
     "noImplicitReturns": true,
     "noUncheckedIndexedAccess": true,
@@ -18,6 +20,7 @@
     "skipLibCheck": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedSideEffectImports": true,
     "useUnknownInCatchVariables": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false

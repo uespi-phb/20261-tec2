@@ -1,9 +1,9 @@
-import type { AccessToken } from './access-token'
-import type { GenerateAccessToken } from './generate-access-token'
-import { InvalidCredentialsError } from './invalid-credentials-error'
-import type { LoadUserByEmail } from './load-user-by-email'
-import type { PasswordComparer } from './password-comparer'
-import type { UseCase } from './usecase'
+import type { AccessToken } from '#src/access-token'
+import type { GenerateAccessToken } from '#src/generate-access-token'
+import { InvalidCredentialsError } from '#src/invalid-credentials-error'
+import type { LoadUserByEmail } from '#src/load-user-by-email'
+import type { PasswordComparer } from '#src/password-comparer'
+import type { UseCase } from '#src/usecase'
 
 export type SignInInput = {
   email: string

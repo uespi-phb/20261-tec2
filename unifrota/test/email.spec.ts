@@ -26,7 +26,9 @@ describe('Email', () => {
     'Should throw InvalidEmailError if e-mail is invalid: "%s"',
     (invalidEmail: unknown) => {
       // Act / Assert
-      expect(() => new Email(invalidEmail as string)).toThrow(InvalidEmailError)
+      expect(() => {
+        Email.validate(invalidEmail as string)
+      }).toThrow(InvalidEmailError)
     },
   )
 

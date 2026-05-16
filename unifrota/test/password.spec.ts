@@ -1,3 +1,4 @@
+import { DomainError } from '#src/domain-error'
 import { InvalidPasswordError } from '#src/invalid-password-error'
 import { Password } from '#src/password'
 
@@ -20,6 +21,7 @@ describe('Password', () => {
     null,
   ])('Should throw InvalidPasswordError when password is invalid: "%s"', (password: unknown) => {
     expect(() => new Password(password as string)).toThrow(InvalidPasswordError)
+    expect(() => new Password(password as string)).toThrow(DomainError)
   })
 
   test('Should compare thow password objects', () => {

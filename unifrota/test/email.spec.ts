@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
+import { DomainError } from '#src/domain-error'
 import { Email } from '#src/email'
 import { InvalidEmailError } from '#src/invalid-email-error'
 
@@ -29,6 +30,9 @@ describe('Email', () => {
       expect(() => {
         Email.validate(invalidEmail as string)
       }).toThrow(InvalidEmailError)
+      expect(() => {
+        Email.validate(invalidEmail as string)
+      }).toThrow(DomainError)
     },
   )
 

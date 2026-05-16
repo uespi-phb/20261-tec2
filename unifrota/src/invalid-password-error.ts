@@ -1,5 +1,7 @@
-export class InvalidPasswordError extends Error {
+import { DomainError } from '#src/domain-error'
+
+export class InvalidPasswordError extends DomainError {
   constructor(message: string = 'Invalid password') {
-    super(message)
+    super(message, 'INVALID_PASSWORD')
   }
 }

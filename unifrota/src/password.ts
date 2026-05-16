@@ -7,8 +7,16 @@ export class Password {
     Password.validate(value)
   }
 
-  isEqual(password: Password): boolean {
-    return this.value === password.value
+  static validate(value: string): void {
+    Password.checkFalsy(value)
+    Password.checkMinLength(value)
+    Password.checkUpperLetter(value)
+    Password.checkLowerLetter(value)
+    Password.checkNumericDigit(value)
+  }
+
+  isEqual(other: Password): boolean {
+    return this.value === other.value
   }
 
   static isValid(password: string): boolean {
@@ -18,14 +26,6 @@ export class Password {
       return false
     }
     return true
-  }
-
-  static validate(password: string): void {
-    Password.checkFalsy(password)
-    Password.checkMinLength(password)
-    Password.checkUpperLetter(password)
-    Password.checkLowerLetter(password)
-    Password.checkNumericDigit(password)
   }
 
   private static checkFalsy(password: string | undefined | null): void {

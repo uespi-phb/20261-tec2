@@ -3,6 +3,8 @@ import { mock, type MockProxy } from 'vitest-mock-extended'
 
 import type { AccessToken } from '#src/access-token'
 import type { AccessTokenGenerator } from '#src/access-token-generator'
+import { ApplicationError } from '#src/application-error'
+import { DomainError } from '#src/domain-error'
 import { InvalidCredentialsError } from '#src/invalid-credentials-error'
 import { InvalidEmailError } from '#src/invalid-email-error'
 import type { LoadUserByEmail, UserAuthData } from '#src/load-user-by-email'
@@ -63,23 +65,29 @@ describe('SignInUseCase', () => {
   test('Should throw InvalidCredentialsError if user is not found by email', async () => {
     // Arrange
     loadUserByEmail.load.mockResolvedValueOnce(null)
+    loadUserByEmail.load.mockResolvedValueOnce(null)
     // Act / Assert
     await expect(() => sut.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    await expect(() => sut.execute(input)).rejects.toThrow(ApplicationError)
   })
 
   test('Should throw InvalidCredentialsError if user password is invalid', async () => {
     // Arrange
     passwordComparer.compare.mockResolvedValueOnce(false)
+    passwordComparer.compare.mockResolvedValueOnce(false)
     // Act / Assert
     await expect(sut.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    await expect(sut.execute(input)).rejects.toThrow(ApplicationError)
   })
 
   test('Should not call PasswordComparer if user is not found by email', async () => {
     // Arrange
     loadUserByEmail.load.mockResolvedValueOnce(null)
+    loadUserByEmail.load.mockResolvedValueOnce(null)
 
     // Act / Assert
     await expect(sut.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    await expect(sut.execute(input)).rejects.toThrow(ApplicationError)
     expect(passwordComparer.compare).not.toHaveBeenCalled()
   })
 
@@ -131,8 +139,10 @@ describe('SignInUseCase', () => {
   test('Should not call GenerateAccessToken if user credentials are invalid', async () => {
     // Arrange
     passwordComparer.compare.mockResolvedValueOnce(false)
+    passwordComparer.compare.mockResolvedValueOnce(false)
     // Act / Assert
     await expect(sut.execute(input)).rejects.toThrow(InvalidCredentialsError)
+    await expect(sut.execute(input)).rejects.toThrow(ApplicationError)
     expect(accessTokenGenerator.generate).not.toHaveBeenCalled()
   })
 
@@ -144,6 +154,7 @@ describe('SignInUseCase', () => {
     }
     // Act / Assert
     await expect(sut.execute(input)).rejects.toThrow(InvalidEmailError)
+    await expect(sut.execute(input)).rejects.toThrow(DomainError)
   })
 
   test('Should not authenticate if password is invalid', async () => {

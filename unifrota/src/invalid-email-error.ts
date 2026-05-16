@@ -1,5 +1,7 @@
-export class InvalidEmailError extends Error {
+import { DomainError } from '#src/domain-error'
+
+export class InvalidEmailError extends DomainError {
   constructor(message: string = 'Invalid e-mail') {
-    super(message)
+    super(message, 'INVALID_EMAIL')
   }
 }

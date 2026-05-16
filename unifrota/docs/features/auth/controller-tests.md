@@ -146,27 +146,27 @@ com status `200` e corpo contendo o token de acesso.
 Deve garantir que o controller rejeita a requisição quando o corpo HTTP não é
 fornecido.
 
-### 4.6. **`should return 400 when email is missing`**
+### 4.5. **`should return 400 when email is missing`**
 
 Deve verificar que o controller responde com erro de requisição inválida quando
 `email` não está presente no corpo.
 
-### 4.7. **`should return 400 when password is missing`**
+### 4.6. **`should return 400 when password is missing`**
 
 Deve verificar que o controller responde com erro de requisição inválida quando
 `password` não está presente no corpo.
 
-### 4.8. **`should return 400 when email is not a string`**
+### 4.7. **`should return 400 when email is not a string`**
 
 Deve garantir que a validação de fronteira rejeita entradas em que `email` chega
 com tipo incompatível com o contrato HTTP esperado.
 
-### 4.9. **`should return 400 when password is not a string`**
+### 4.8. **`should return 400 when password is not a string`**
 
 Deve garantir que a validação de fronteira rejeita entradas em que `password`
 chega com tipo incompatível com o contrato HTTP esperado.
 
-### 4.10. **`should not call sign in use case when request is invalid`**
+### 4.9. **`should not call sign in use case when request is invalid`**
 
 Deve verificar que, diante de falhas de validação na borda HTTP, o controller não
 invoca o caso de uso.
@@ -180,12 +180,12 @@ Este teste pode usar uma tabela com os cenários inválidos de fronteira:
 - `email` com tipo diferente de `string`
 - `password` com tipo diferente de `string`
 
-### 4.11. **`should return 401 when sign in use case throws InvalidCredentialsError`**
+### 4.10. **`should return 401 when sign in use case throws InvalidCredentialsError`**
 
 Deve garantir que, quando o caso de uso sinaliza credenciais inválidas, o
 controller traduz esse erro esperado para resposta HTTP `401`.
 
-### 4.12. **`should return 400 when sign in use case throws InvalidEmailError`**
+### 4.11. **`should return 400 when sign in use case throws InvalidEmailError`**
 
 Deve garantir que, quando o caso de uso ou os objetos de domínio rejeitam um
 e-mail malformado com `InvalidEmailError`, o controller traduz esse erro esperado
@@ -198,7 +198,7 @@ Este teste só deve ser implementado quando o fluxo de sign in realmente puder
 propagar `InvalidEmailError`. Caso contrário, ele deve permanecer como cenário
 futuro do roteiro, e não como exigência artificial para o use case.
 
-### 4.13. **`should return 400 when sign in use case throws InvalidPasswordError`**
+### 4.12. **`should return 400 when sign in use case throws InvalidPasswordError`**
 
 Deve garantir que, quando o caso de uso ou os objetos de domínio rejeitam
 uma senha malformada com `InvalidPasswordError`, o controller traduz esse erro
@@ -211,7 +211,7 @@ Este teste só deve ser implementado quando o fluxo de sign in realmente puder
 propagar `InvalidPasswordError`. Caso contrário, ele deve permanecer como cenário
 futuro do roteiro, e não como exigência artificial para o use case.
 
-### 4.14. **`should return 500 when sign in use case throws unexpected error`**
+### 4.13. **`should return 500 when sign in use case throws unexpected error`**
 
 Deve garantir que falhas inesperadas lançadas pelo caso de uso sejam traduzidas
 para `500`, preservando o isolamento entre a interface HTTP e detalhes internos

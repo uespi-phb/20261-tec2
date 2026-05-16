@@ -1,12 +1,11 @@
-import type { AccessToken } from '#src/access-token'
-import type { AccessTokenGenerator } from '#src/access-token-generator'
-import { Email } from '#src/email'
-import { InvalidCredentialsError } from '#src/invalid-credentials-error'
-import type { LoadUserByEmail } from '#src/load-user-by-email'
-import type { PasswordComparer } from '#src/password-comparer'
-import type { UseCase } from '#src/usecase'
-
-import { Password } from './password.js'
+import type { AccessTokenGenerator } from '#src/features/auth/app/contracts/access-token-generator'
+import type { LoadUserByEmail } from '#src/features/auth/app/contracts/load-user-by-email'
+import type { PasswordComparer } from '#src/features/auth/app/contracts/password-comparer'
+import type { AccessToken } from '#src/features/auth/app/dtos/access-token'
+import { InvalidCredentialsError } from '#src/features/auth/app/errors/invalid-credentials-error'
+import { Email } from '#src/features/auth/domain/value-objects/email'
+import { Password } from '#src/features/auth/domain/value-objects/password'
+import type { UseCase } from '#src/shared/contracts/usecase'
 
 export type SignInInput = {
   email: string

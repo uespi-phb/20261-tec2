@@ -1,6 +1,6 @@
-import { DomainError } from '#src/domain-error'
-import { InvalidPasswordError } from '#src/invalid-password-error'
-import { Password } from '#src/password'
+import { DomainError } from '#src/shared/errors/domain-error'
+import { InvalidPasswordError } from '#src/features/auth/domain/errors/invalid-password-error'
+import { Password } from '#src/features/auth/domain/value-objects/password'
 
 describe('Password', () => {
   test('Should create a valid Password object storing original password', () => {

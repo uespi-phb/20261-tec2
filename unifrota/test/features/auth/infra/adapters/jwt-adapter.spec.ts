@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import { JwtAdapter } from '#src/jwt-adapter'
+import { JwtAdapter } from '#src/features/auth/infra/adapters/jwt-adapter'
 
 describe('JwtAdapter', () => {
   let payload: object

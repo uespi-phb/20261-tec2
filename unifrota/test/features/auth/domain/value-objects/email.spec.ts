@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest'
 
-import { DomainError } from '#src/domain-error'
-import { Email } from '#src/email'
-import { InvalidEmailError } from '#src/invalid-email-error'
+import { DomainError } from '#src/shared/errors/domain-error'
+import { Email } from '#src/features/auth/domain/value-objects/email'
+import { InvalidEmailError } from '#src/features/auth/domain/errors/invalid-email-error'
 
 describe('Email', () => {
   test('Should create an Email when e-mail is valid', () => {

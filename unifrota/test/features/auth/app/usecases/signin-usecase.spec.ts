@@ -1,16 +1,16 @@
 import { describe, test, expect, beforeAll } from 'vitest'
 import { mock, type MockProxy } from 'vitest-mock-extended'
 
-import type { AccessToken } from '#src/access-token'
-import type { AccessTokenGenerator } from '#src/access-token-generator'
-import { ApplicationError } from '#src/application-error'
-import { DomainError } from '#src/domain-error'
-import { InvalidCredentialsError } from '#src/invalid-credentials-error'
-import { InvalidEmailError } from '#src/invalid-email-error'
-import type { LoadUserByEmail, UserAuthData } from '#src/load-user-by-email'
-import type { PasswordComparer } from '#src/password-comparer'
-import { SignInUseCase } from '#src/signin-usecase'
-import type { SignInInput, AccessTokenPayload } from '#src/signin-usecase'
+import type { AccessTokenGenerator } from '#src/features/auth/app/contracts/access-token-generator'
+import type { LoadUserByEmail, UserAuthData } from '#src/features/auth/app/contracts/load-user-by-email'
+import type { PasswordComparer } from '#src/features/auth/app/contracts/password-comparer'
+import type { AccessToken } from '#src/features/auth/app/dtos/access-token'
+import { InvalidCredentialsError } from '#src/features/auth/app/errors/invalid-credentials-error'
+import type { SignInInput, AccessTokenPayload } from '#src/features/auth/app/usecases/signin-usecase'
+import { SignInUseCase } from '#src/features/auth/app/usecases/signin-usecase'
+import { InvalidEmailError } from '#src/features/auth/domain/errors/invalid-email-error'
+import { ApplicationError } from '#src/shared/errors/application-error'
+import { DomainError } from '#src/shared/errors/domain-error'
 
 describe('SignInUseCase', () => {
   let input: SignInInput
